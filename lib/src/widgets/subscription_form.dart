@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lunch_subscription/src/widgets/box_count_field.dart';
+import 'package:lunch_subscription/src/widgets/padded_shadow_card.dart';
 
 class SubscriptionForm extends StatefulWidget {
   final int initialBoxCount;
@@ -19,31 +20,46 @@ class SubscriptionForm extends StatefulWidget {
 class _SubscriptionFormState extends State<SubscriptionForm> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Material(
-        color: Colors.white,
-        shadowColor: Colors.grey,
+    return PaddedShadowCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          BoxCountField(
+            boxCountChanged: widget.boxCountChanged,
+            initialBoxCount: widget.initialBoxCount,
+          ),
+          //todo subscriptionlength
+          //todo calendars
+          Padding(
+            padding: EdgeInsets.only(top: 16.0),
+            child: _buildProTips(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildProTips() {
+    return Container(
+      padding: EdgeInsets.all(16.0),
+      decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4.0),
-        elevation: 4.0,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 20.0,
-            horizontal: 16.0,
+        color: Colors.orange.shade50,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Text('Pro Tips',
+              style: TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              )),
+          Text(
+            'Atur jadwal langganan dengan menekan tanggal pada kalender. ' +
+                'Selesaikan transaksi sebelum pukul 19:00 untuk mulai pengiriman besok.',
+            style: TextStyle(color: Colors.black38),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              BoxCountField(
-                boxCountChanged: widget.boxCountChanged,
-                initialBoxCount: widget.initialBoxCount,
-              ),
-              //todo subscriptionlength
-              //todo calendars
-              //todo protips
-            ],
-          ),
-        ),
+        ],
       ),
     );
   }

@@ -5,6 +5,7 @@ import 'package:lunch_subscription/src/styles/app_theme.dart';
 import 'package:lunch_subscription/src/widgets/custom_stepper.dart';
 import 'package:lunch_subscription/src/widgets/gradient_button.dart';
 import 'package:lunch_subscription/src/widgets/subscription_form.dart';
+import 'package:lunch_subscription/src/widgets/subscription_summary.dart';
 
 class SubscriptionScreen extends StatefulWidget {
   @override
@@ -18,10 +19,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var now = DateTime.now();
-    var start = startDate(now);
-    var end = start.add(Duration(days: 5));
-    var initialDates = Utils.daysInRange(start, end).toList();
+    var initialDates = _generateInitialDates();
+    debugPrint(initialDates.toString());
     _subscriptionData =
         SubscriptionData(boxCount: 1, subscriptionDate: initialDates);
   }
@@ -32,30 +31,34 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
       child: Scaffold(
         appBar: _buildAppBar(context),
         backgroundColor: Colors.grey.shade300,
-        body: ListView(
-          children: <Widget>[
-            //todo subscription form
-            SubscriptionForm(
-              initialBoxCount: _subscriptionData.boxCount,
-              boxCountChanged: onBoxCountChanged,
-            ),
-            //todo subscription summary
-            Padding(
-              padding: EdgeInsets.all(16.0),
-              child: GradientButton(
-                alignment: Alignment.center,
+        body: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SubscriptionForm(
+                initialBoxCount: _subscriptionData.boxCount,
+                boxCountChanged: onBoxCountChanged,
+              ),
+              SubscriptionSummary(
+                data: _subscriptionData,
+              ),
+              Padding(
                 padding: EdgeInsets.all(16.0),
-                gradientColors: [AppColors.darkOrange, AppColors.orange],
-                cornerRadius: 4.0,
-                onTap: () {},
-                child: Text(
-                  'Selanjutnya',
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
+                child: GradientButton(
+                  alignment: Alignment.center,
+                  padding: EdgeInsets.all(16.0),
+                  gradientColors: [AppColors.darkOrange, AppColors.orange],
+                  cornerRadius: 4.0,
+                  onTap: () {},
+                  child: Text(
+                    'Selanjutnya',
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -90,11 +93,24 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     );
   }
 
-  DateTime startDate(DateTime now) {
-    var hour = now.hour;
-    var weekday = now.weekday;
-    var additionalDay = hour < 19 ? 1 : weekday == 5 ? 3 : 2;
-    return now.add(Duration(days: additionalDay));
+  List<DateTime> _generateInitialDates() {
+    var now = DateTime.now();
+    var additionalDay = now.hour < 19 ? 1 : 2;
+    now.weekday == 5
+        ? additionalDay = 3
+        : now.weekday == 6 ? additionalDay = 2 : additionalDay;
+    var start = now.add(Duration(days: additionalDay));
+    var end = start.add(Duration(days: 5));
+    var initialDates = Utils
+        .daysInRange(start, end)
+        .where((date) => date.weekday != 6 && date.weekday != 7)
+        .toList();
+    while (initialDates.length < 5) {
+      var last = initialDates.last;
+      additionalDay = last.weekday == 5 ? 3 : 1;
+      initialDates.add(last.add(Duration(days: additionalDay)));
+    }
+    return initialDates;
   }
 
   void onBoxCountChanged(int newBoxCount) {

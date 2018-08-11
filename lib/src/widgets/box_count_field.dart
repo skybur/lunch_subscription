@@ -30,7 +30,7 @@ class _BoxCountFieldState extends State<BoxCountField> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         Padding(
-          padding: const EdgeInsets.only(bottom: 16.0),
+          padding: EdgeInsets.only(bottom: 16.0),
           child: Text(
             'Jumlah box per hari',
             style: AppTextStyle.header,
@@ -50,7 +50,7 @@ class _BoxCountFieldState extends State<BoxCountField> {
                     ),
                   ),
                   suffixText: 'Box',
-                  contentPadding: const EdgeInsets.all(16.0),
+                  contentPadding: EdgeInsets.all(16.0),
                 ),
                 keyboardType: TextInputType.numberWithOptions(),
                 onChanged: (text) {
@@ -79,7 +79,7 @@ class _BoxCountFieldState extends State<BoxCountField> {
                 if (prevBoxCount != _boxCount)
                   widget.boxCountChanged(_boxCount);
               },
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: EdgeInsets.symmetric(horizontal: 24.0),
               textScaleFactor: 3.0,
               radius: BorderRadius.only(
                 bottomLeft: Radius.circular(4.0),
@@ -99,7 +99,7 @@ class _BoxCountFieldState extends State<BoxCountField> {
                 if (prevBoxCount != _boxCount)
                   widget.boxCountChanged(_boxCount);
               },
-              padding: const EdgeInsets.symmetric(
+              padding: EdgeInsets.symmetric(
                 horizontal: 24.0,
                 vertical: 8.0,
               ),
