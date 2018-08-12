@@ -20,9 +20,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
     // TODO: implement initState
     super.initState();
     var initialDates = _generateInitialDates();
-    debugPrint(initialDates.toString());
     _subscriptionData =
-        SubscriptionData(boxCount: 1, subscriptionDate: initialDates);
+        SubscriptionData(boxCount: 1, subscriptionDates: initialDates);
   }
 
   @override
@@ -38,10 +37,9 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
               SubscriptionForm(
                 initialBoxCount: _subscriptionData.boxCount,
                 boxCountChanged: onBoxCountChanged,
+                subscriptionDates: _subscriptionData.subscriptionDates,
               ),
-              SubscriptionSummary(
-                data: _subscriptionData,
-              ),
+              SubscriptionSummary(data: _subscriptionData),
               Padding(
                 padding: EdgeInsets.all(16.0),
                 child: GradientButton(
@@ -75,9 +73,8 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
             AppBar(
               backgroundColor: Colors.white,
               elevation: 0.0,
-              leading: InkWell(
-                  onTap: () {},
-                  child: Container(child: Icon(Icons.arrow_back))),
+              leading:
+                  IconButton(onPressed: () {}, icon: Icon(Icons.arrow_back)),
               title: Text('Mulai Langganan'),
             ),
             CustomStepper(
@@ -94,7 +91,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   }
 
   List<DateTime> _generateInitialDates() {
-    var now = DateTime.now();
+    var now = DateTime(2018, 4, 12);
     var additionalDay = now.hour < 19 ? 1 : 2;
     now.weekday == 5
         ? additionalDay = 3
@@ -116,7 +113,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   void onBoxCountChanged(int newBoxCount) {
     setState(() {
       _subscriptionData = _subscriptionData.copyWith(boxCount: newBoxCount);
-      debugPrint(_subscriptionData.boxCount.toString());
     });
   }
 }

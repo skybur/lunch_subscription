@@ -20,10 +20,7 @@ class SubscriptionSummary extends StatelessWidget {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(bottom: 16.0),
-            child: Text(
-              'Rincian Langganan',
-              style: AppTextStyle.header,
-            ),
+            child: Text('Rincian Langganan', style: AppTextStyle.header),
           ),
           SummaryEntry(
             entryLabel: 'Harga per box',
@@ -44,10 +41,12 @@ class SubscriptionSummary extends StatelessWidget {
           SummaryEntry(
             entryLabel: 'Lama Langganan',
             labelStyle: labelStyle,
-            entryValue: '${data.subscriptionDate.length} hari',
+            entryValue: '${data.subscriptionDates.length} hari',
             valueStyle: labelStyle,
             entrySublabel: 'Mulai ' +
-                DateFormat.yMMMMEEEEd('id').format(data.subscriptionDate.first),
+                DateFormat
+                    .yMMMMEEEEd('id')
+                    .format(data.subscriptionDates.first),
             subLabelStyle: subLabelStyle,
           ),
           _buildDivider(),
@@ -70,14 +69,11 @@ class SubscriptionSummary extends StatelessWidget {
   _buildDivider() {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 14.0),
-      child: Container(
-        height: 1.0,
-        color: Colors.grey.shade300,
-      ),
+      child: Container(height: 1.0, color: Colors.grey.shade300),
     );
   }
 
   int computeTotal() {
-    return data.boxCount * data.pricePerBox * data.subscriptionDate.length;
+    return data.boxCount * data.pricePerBox * data.subscriptionDates.length;
   }
 }

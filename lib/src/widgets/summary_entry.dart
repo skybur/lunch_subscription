@@ -27,14 +27,9 @@ class SummaryEntry extends StatelessWidget {
       children: <Widget>[
         Expanded(
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: labels,
-          ),
+              crossAxisAlignment: CrossAxisAlignment.start, children: labels),
         ),
-        Text(
-          entryValue ?? '',
-          style: valueStyle,
-        ),
+        Text(entryValue ?? '', style: valueStyle),
       ],
     );
   }

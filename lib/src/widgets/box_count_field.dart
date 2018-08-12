@@ -15,6 +15,7 @@ class BoxCountField extends StatefulWidget {
 class _BoxCountFieldState extends State<BoxCountField> {
   int _boxCount;
   TextEditingController _boxFieldController;
+  FocusNode _boxFieldFocusNode;
 
   @override
   void initState() {
@@ -22,6 +23,7 @@ class _BoxCountFieldState extends State<BoxCountField> {
     super.initState();
     _boxCount = widget.initialBoxCount;
     _boxFieldController = TextEditingController(text: '$_boxCount');
+    _boxFieldFocusNode = FocusNode();
   }
 
   @override
@@ -31,16 +33,14 @@ class _BoxCountFieldState extends State<BoxCountField> {
       children: <Widget>[
         Padding(
           padding: EdgeInsets.only(bottom: 16.0),
-          child: Text(
-            'Jumlah box per hari',
-            style: AppTextStyle.header,
-          ),
+          child: Text('Jumlah box per hari', style: AppTextStyle.header),
         ),
         Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
             Expanded(
               child: TextField(
+                focusNode: _boxFieldFocusNode,
                 controller: _boxFieldController,
                 textAlign: TextAlign.center,
                 decoration: InputDecoration(
@@ -66,47 +66,36 @@ class _BoxCountFieldState extends State<BoxCountField> {
                 ],
               ),
             ),
-            Container(
-              width: 8.0,
-              color: Colors.white,
-            ),
+            Container(width: 8.0),
             _buildValueChangeButton(
               buttonText: '-',
               valueChange: () {
+                if (_boxFieldFocusNode.hasFocus) _boxFieldFocusNode.unfocus();
                 var prevBoxCount = _boxCount;
                 --_boxCount == 0 ? _boxCount++ : _boxCount;
-                _boxFieldController.text = '$_boxCount';
-                if (prevBoxCount != _boxCount)
-                  widget.boxCountChanged(_boxCount);
+                _updateBoxCountText(prevBoxCount, _boxCount);
               },
               padding: EdgeInsets.symmetric(horizontal: 24.0),
               textScaleFactor: 3.0,
               radius: BorderRadius.only(
-                bottomLeft: Radius.circular(4.0),
-                topLeft: Radius.circular(4.0),
+                bottomLeft: Radius.circular(8.0),
+                topLeft: Radius.circular(8.0),
               ),
             ),
-            Container(
-              width: 3.0,
-              color: Colors.white,
-            ),
+            Container(width: 3.0),
             _buildValueChangeButton(
               buttonText: '+',
               valueChange: () {
+                if (_boxFieldFocusNode.hasFocus) _boxFieldFocusNode.unfocus();
                 var prevBoxCount = _boxCount;
                 ++_boxCount > 100 ? _boxCount-- : _boxCount;
-                _boxFieldController.text = '$_boxCount';
-                if (prevBoxCount != _boxCount)
-                  widget.boxCountChanged(_boxCount);
+                _updateBoxCountText(prevBoxCount, _boxCount);
               },
-              padding: EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 8.0,
-              ),
+              padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
               textScaleFactor: 2.0,
               radius: BorderRadius.only(
-                bottomRight: Radius.circular(4.0),
-                topRight: Radius.circular(4.0),
+                bottomRight: Radius.circular(8.0),
+                topRight: Radius.circular(8.0),
               ),
             ),
           ],
@@ -133,13 +122,16 @@ class _BoxCountFieldState extends State<BoxCountField> {
           padding: padding,
           child: Text(
             buttonText,
-            style: TextStyle(
-              color: Colors.white,
-            ),
+            style: TextStyle(color: Colors.white),
             textScaleFactor: textScaleFactor,
           ),
         ),
       ),
     );
+  }
+
+  void _updateBoxCountText(int prevBoxCount, int boxCount) {
+    _boxFieldController.text = '$_boxCount';
+    if (prevBoxCount != _boxCount) widget.boxCountChanged(_boxCount);
   }
 }
