@@ -2,6 +2,8 @@ import 'package:date_utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lunch_subscription/src/styles/app_theme.dart';
+import 'package:lunch_subscription/src/utils/tuple.dart';
+import 'package:lunch_subscription/src/widgets/calendar_tile.dart';
 import 'package:lunch_subscription/src/widgets/padded_shadow_card.dart';
 
 class SubscriptionCalendar extends StatefulWidget {
@@ -27,26 +29,38 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
     _currentlySelectedSubscriptionDates = widget.subscriptionDates;
     _currentMonth = DateTime(2018, 4);
     // _currentMonth = DateTime.now();
+  }
+
+  @override
+  void didUpdateWidget(SubscriptionCalendar oldWidget) {
+    // TODO: implement didUpdateWidget
+    super.didUpdateWidget(oldWidget);
     _currentMonthDates = _generateMonthDates(_currentMonth);
   }
 
   @override
   Widget build(BuildContext context) {
+    _currentMonthDates = _generateMonthDates(_currentMonth);
     var tiles = <CalendarTile>[];
     var radiusBottomLeft = BorderRadius.only(bottomLeft: Radius.circular(8.0));
     var radiusBottomRight =
         BorderRadius.only(bottomRight: Radius.circular(8.0));
-    _currentMonthDates.asMap().forEach((index, date) => tiles.add(CalendarTile(
-          dateTime: date,
-          selected: _currentlySelectedSubscriptionDates
-              .any((d) => Utils.isSameDay(date, d)),
-          enabled: date.weekday != 6 &&
-              date.weekday != 7 &&
-              date.compareTo(DateTime(2018, 4, 12)) > 0,
-          borderRadius: index == 28
-              ? radiusBottomLeft
-              : index == 34 ? radiusBottomRight : null,
-        )));
+    _currentMonthDates.asMap().forEach(
+          (index, date) => tiles.add(
+                CalendarTile(
+                  onDateStateChanged: onDateStateChanged,
+                  dateTime: date,
+                  selected: _currentlySelectedSubscriptionDates
+                      .any((d) => Utils.isSameDay(date, d)),
+                  enabled: date.weekday != 6 &&
+                      date.weekday != 7 &&
+                      date.compareTo(DateTime(2018, 4, 12)) > 0,
+                  borderRadius: index == 28
+                      ? radiusBottomLeft
+                      : index == 34 ? radiusBottomRight : null,
+                ),
+              ),
+        );
     return PaddedShadowCard(
       padding: EdgeInsets.only(top: 16.0),
       innerPadding: EdgeInsets.all(1.0),
@@ -56,7 +70,11 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
           Row(
             children: <Widget>[
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  _currentMonth =
+                      DateTime(_currentMonth.year, _currentMonth.month - 1);
+                  setState(() {});
+                },
                 icon: Icon(Icons.chevron_left),
               ),
               Expanded(
@@ -68,7 +86,11 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
                 ),
               ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  _currentMonth =
+                      DateTime(_currentMonth.year, _currentMonth.month + 1);
+                  setState(() {});
+                },
                 icon: Icon(Icons.chevron_right),
               ),
             ],
@@ -79,7 +101,11 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 14.0),
                   child: Center(
-                      child: Text(day, style: TextStyle(color: Colors.grey))),
+                    child: Text(
+                      day,
+                      style: TextStyle(color: Colors.grey, fontSize: 12.0),
+                    ),
+                  ),
                 ),
               );
             }).toList(),
@@ -95,6 +121,29 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
     );
   }
 
+  void onDateStateChanged(Tuple<DateTime, bool> value) {
+    var selected = value.item2;
+    var date = value.item1;
+    if (!selected && _currentlySelectedSubscriptionDates.contains(date)) {
+      _currentlySelectedSubscriptionDates.remove(date);
+    }
+    if (selected) {
+      _currentlySelectedSubscriptionDates.add(date);
+    }
+    if (_currentlySelectedSubscriptionDates.length < 2) {
+      var nextDay = date.add(Duration(days: 1));
+      if (Utils.isSameDay(nextDay, _currentlySelectedSubscriptionDates.last))
+        nextDay = nextDay.add(Duration(days: 1));
+      if (nextDay.weekday == DateTime.saturday)
+        nextDay = nextDay.add(Duration(days: 2));
+      if (Utils.isSameDay(nextDay, _currentlySelectedSubscriptionDates.last))
+        nextDay = nextDay.add(Duration(days: 1));
+      _currentlySelectedSubscriptionDates.add(nextDay);
+    }
+    setState(() {});
+    widget.subscriptionDateChanged(_currentlySelectedSubscriptionDates);
+  }
+
   List<DateTime> _generateMonthDates(DateTime month) {
     var first = Utils.firstDayOfMonth(month);
     var firstDay = first.weekday;
@@ -106,65 +155,12 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
 
     var last = Utils.lastDayOfMonth(month);
     var lastDay = last.weekday;
-    // if (lastDay == DateTime.monday) {
-    //   last = last.subtract(Duration(days: 1));
-    // } else if (lastDay != DateTime.sunday) {
-    last = last.add(Duration(days: (7 - lastDay)));
-    // }
+    last = last.add(Duration(days: (8 - lastDay)));
 
     return Utils.daysInRange(first, last).toList();
   }
 
   List<String> _generateShortDayName() {
     return ['SEN', 'SEL', 'RAB', 'KAM', 'JUM', 'SAB', 'MIN'];
-  }
-}
-
-class CalendarTile extends StatefulWidget {
-  final DateTime dateTime;
-  final bool selected;
-  final bool enabled;
-  final BorderRadius borderRadius;
-
-  const CalendarTile({
-    Key key,
-    this.dateTime,
-    this.selected = false,
-    this.borderRadius,
-    this.enabled = true,
-  }) : super(key: key);
-
-  @override
-  _CalendarTileState createState() => _CalendarTileState();
-}
-
-class _CalendarTileState extends State<CalendarTile> {
-  bool _currentlySelected;
-
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    _currentlySelected = widget.selected;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.white, width: 1.0),
-        color:
-            _currentlySelected ? AppColors.lightOrange : Colors.grey.shade200,
-        borderRadius: widget.borderRadius,
-      ),
-      child: Text(
-        '${widget.dateTime.day}',
-        style: TextStyle(
-            color: widget.enabled
-                ? _currentlySelected ? Colors.white : Colors.black87
-                : Colors.grey.shade300),
-      ),
-    );
   }
 }

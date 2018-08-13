@@ -38,6 +38,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 initialBoxCount: _subscriptionData.boxCount,
                 boxCountChanged: onBoxCountChanged,
                 subscriptionDates: _subscriptionData.subscriptionDates,
+                subscriptionDateChanged: onSubcriptionDatesChanged,
               ),
               SubscriptionSummary(data: _subscriptionData),
               Padding(
@@ -113,6 +114,13 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   void onBoxCountChanged(int newBoxCount) {
     setState(() {
       _subscriptionData = _subscriptionData.copyWith(boxCount: newBoxCount);
+    });
+  }
+
+  void onSubcriptionDatesChanged(List<DateTime> newDates) {
+    setState(() {
+      _subscriptionData =
+          _subscriptionData.copyWith(subscriptionDate: newDates);
     });
   }
 }
