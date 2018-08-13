@@ -9,6 +9,7 @@ class App extends StatelessWidget {
       theme: ThemeData(
         primaryColor: AppColors.lightOrange,
         textSelectionColor: AppColors.lightOrange,
+        hintColor: AppColors.lightOrange,
       ),
       home: SubscriptionScreen(),
     );

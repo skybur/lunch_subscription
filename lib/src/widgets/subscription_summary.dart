@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:lunch_subscription/src/models/subscription_data.dart';
 import 'package:lunch_subscription/src/styles/app_theme.dart';
+import 'package:lunch_subscription/src/utils/utils.dart';
 import 'package:lunch_subscription/src/widgets/padded_shadow_card.dart';
 import 'package:lunch_subscription/src/widgets/summary_entry.dart';
 
@@ -27,7 +28,8 @@ class SubscriptionSummary extends StatelessWidget {
             labelStyle: labelStyle,
             entryValue: NumberFormat
                 .currency(symbol: 'Rp ', decimalDigits: 0)
-                .format(data.pricePerBox),
+                .format(SubscriptionUtils
+                    .getPricePerBox(data.subscriptionDates.length)),
             valueStyle: labelStyle,
           ),
           _buildDivider(),
@@ -74,6 +76,8 @@ class SubscriptionSummary extends StatelessWidget {
   }
 
   int computeTotal() {
-    return data.boxCount * data.pricePerBox * data.subscriptionDates.length;
+    return data.boxCount *
+        SubscriptionUtils.getPricePerBox(data.subscriptionDates.length) *
+        data.subscriptionDates.length;
   }
 }

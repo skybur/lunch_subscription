@@ -35,6 +35,7 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
   void didUpdateWidget(SubscriptionCalendar oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
+    _currentlySelectedSubscriptionDates = widget.subscriptionDates;
     _currentMonthDates = _generateMonthDates(_currentMonth);
   }
 
@@ -62,7 +63,7 @@ class _SubscriptionCalendarState extends State<SubscriptionCalendar> {
               ),
         );
     return PaddedShadowCard(
-      padding: EdgeInsets.only(top: 16.0),
+      padding: EdgeInsets.only(top: 20.0),
       innerPadding: EdgeInsets.all(1.0),
       borderRadius: 8.0,
       child: Column(

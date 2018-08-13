@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:lunch_subscription/src/utils/utils.dart';
 import 'package:lunch_subscription/src/widgets/box_count_field.dart';
 import 'package:lunch_subscription/src/widgets/padded_shadow_card.dart';
 import 'package:lunch_subscription/src/widgets/subscription_calendar.dart';
+import 'package:lunch_subscription/src/widgets/subscription_period_chooser.dart';
 
 class SubscriptionForm extends StatefulWidget {
   final int initialBoxCount;
@@ -9,13 +11,13 @@ class SubscriptionForm extends StatefulWidget {
   final List<DateTime> subscriptionDates;
   final ValueChanged<List<DateTime>> subscriptionDateChanged;
 
-  const SubscriptionForm(
-      {Key key,
-      this.boxCountChanged,
-      this.subscriptionDateChanged,
-      this.initialBoxCount,
-      this.subscriptionDates})
-      : super(key: key);
+  const SubscriptionForm({
+    Key key,
+    this.boxCountChanged,
+    this.subscriptionDateChanged,
+    this.initialBoxCount,
+    this.subscriptionDates,
+  }) : super(key: key);
   @override
   _SubscriptionFormState createState() => _SubscriptionFormState();
 }
@@ -40,7 +42,10 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
             boxCountChanged: widget.boxCountChanged,
             initialBoxCount: widget.initialBoxCount,
           ),
-          //todo subscriptionlength
+          SubscriptionPeriodChooser(
+            selectedSubcriptionDate: _currentlySelectedDates,
+            onPeriodSelected: onSelectedPeriodChanged,
+          ),
           SubscriptionCalendar(
             subscriptionDates: _currentlySelectedDates,
             subscriptionDateChanged: widget.subscriptionDateChanged,
@@ -73,5 +78,11 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
         ],
       ),
     );
+  }
+
+  void onSelectedPeriodChanged(int newPeriod) {
+    _currentlySelectedDates =
+        SubscriptionUtils.defaultSubscriptionDates(newPeriod);
+    setState(() {});
   }
 }

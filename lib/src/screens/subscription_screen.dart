@@ -1,7 +1,7 @@
-import 'package:date_utils/date_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:lunch_subscription/src/models/subscription_data.dart';
 import 'package:lunch_subscription/src/styles/app_theme.dart';
+import 'package:lunch_subscription/src/utils/utils.dart';
 import 'package:lunch_subscription/src/widgets/custom_stepper.dart';
 import 'package:lunch_subscription/src/widgets/gradient_button.dart';
 import 'package:lunch_subscription/src/widgets/subscription_form.dart';
@@ -19,7 +19,7 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var initialDates = _generateInitialDates();
+    var initialDates = SubscriptionUtils.defaultSubscriptionDates(5);
     _subscriptionData =
         SubscriptionData(boxCount: 1, subscriptionDates: initialDates);
   }
@@ -89,26 +89,6 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
         ),
       ),
     );
-  }
-
-  List<DateTime> _generateInitialDates() {
-    var now = DateTime(2018, 4, 12);
-    var additionalDay = now.hour < 19 ? 1 : 2;
-    now.weekday == 5
-        ? additionalDay = 3
-        : now.weekday == 6 ? additionalDay = 2 : additionalDay;
-    var start = now.add(Duration(days: additionalDay));
-    var end = start.add(Duration(days: 5));
-    var initialDates = Utils
-        .daysInRange(start, end)
-        .where((date) => date.weekday != 6 && date.weekday != 7)
-        .toList();
-    while (initialDates.length < 5) {
-      var last = initialDates.last;
-      additionalDay = last.weekday == 5 ? 3 : 1;
-      initialDates.add(last.add(Duration(days: additionalDay)));
-    }
-    return initialDates;
   }
 
   void onBoxCountChanged(int newBoxCount) {
