@@ -7,6 +7,7 @@ class GradientButton extends StatelessWidget {
   final Alignment begin;
   final Alignment end;
   final Alignment alignment;
+  final EdgeInsets innerPadding;
   final EdgeInsets padding;
   final VoidCallback onTap;
 
@@ -17,29 +18,33 @@ class GradientButton extends StatelessWidget {
     this.onTap,
     this.child,
     this.alignment,
-    this.padding,
+    this.innerPadding = EdgeInsets.zero,
     this.begin = Alignment.centerLeft,
     this.end = Alignment.centerRight,
+    this.padding = EdgeInsets.zero,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      type: MaterialType.transparency,
-      child: InkWell(
-        onTap: onTap,
-        child: Container(
-          alignment: alignment,
-          padding: padding,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(cornerRadius),
-            gradient: LinearGradient(
-              colors: gradientColors,
-              begin: begin,
-              end: end,
+    return Padding(
+      padding: padding,
+      child: Material(
+        type: MaterialType.transparency,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            alignment: alignment,
+            padding: innerPadding,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(cornerRadius),
+              gradient: LinearGradient(
+                colors: gradientColors,
+                begin: begin,
+                end: end,
+              ),
             ),
+            child: child,
           ),
-          child: child,
         ),
       ),
     );

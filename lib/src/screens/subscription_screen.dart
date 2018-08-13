@@ -19,9 +19,11 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    var initialDates = SubscriptionUtils.defaultSubscriptionDates(5);
-    _subscriptionData =
-        SubscriptionData(boxCount: 1, subscriptionDates: initialDates);
+    var initialDates = SubscriptionUtils.defaultSubscriptionDates(10);
+    _subscriptionData = SubscriptionData(
+      boxCount: 1,
+      subscriptionDates: initialDates,
+    );
   }
 
   @override
@@ -41,19 +43,17 @@ class _SubscriptionScreenState extends State<SubscriptionScreen> {
                 subscriptionDateChanged: onSubcriptionDatesChanged,
               ),
               SubscriptionSummary(data: _subscriptionData),
-              Padding(
+              GradientButton(
                 padding: EdgeInsets.all(16.0),
-                child: GradientButton(
-                  alignment: Alignment.center,
-                  padding: EdgeInsets.all(16.0),
-                  gradientColors: [AppColors.darkOrange, AppColors.orange],
-                  cornerRadius: 4.0,
-                  onTap: () {},
-                  child: Text(
-                    'Selanjutnya',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
+                alignment: Alignment.center,
+                innerPadding: EdgeInsets.all(16.0),
+                gradientColors: [AppColors.darkOrange, AppColors.orange],
+                cornerRadius: 4.0,
+                onTap: () {},
+                child: Text(
+                  'Selanjutnya',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
                 ),
               ),
             ],

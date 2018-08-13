@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lunch_subscription/src/styles/app_theme.dart';
+import 'package:lunch_subscription/src/widgets/edit_text.dart';
+import 'package:lunch_subscription/src/widgets/value_changed_button.dart';
 
 class BoxCountField extends StatefulWidget {
   final int initialBoxCount;
@@ -38,36 +40,24 @@ class _BoxCountFieldState extends State<BoxCountField> {
         Row(
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            Expanded(
-              child: TextField(
-                focusNode: _boxFieldFocusNode,
-                controller: _boxFieldController,
-                textAlign: TextAlign.center,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(
-                      color: AppColors.lightOrange,
-                    ),
-                  ),
-                  suffixText: 'Box',
-                  contentPadding: EdgeInsets.all(16.0),
-                ),
-                keyboardType: TextInputType.numberWithOptions(),
-                onChanged: (text) {
-                  var val = int.parse(text);
-                  val = val > 100 ? 100 : val <= 0 ? 1 : val;
-                  _boxFieldController.text = '$val';
-                  _boxCount = val;
-                  widget.boxCountChanged(val);
-                },
-                inputFormatters: [
-                  LengthLimitingTextInputFormatter(3),
-                  WhitelistingTextInputFormatter(RegExp(r'\d'))
-                ],
-              ),
+            NumberEditText(
+              focusNode: _boxFieldFocusNode,
+              controller: _boxFieldController,
+              suffixText: 'Box',
+              onChanged: (text) {
+                var val = int.parse(text);
+                val = val > 100 ? 100 : val <= 0 ? 1 : val;
+                _boxFieldController.text = '$val';
+                _boxCount = val;
+                widget.boxCountChanged(val);
+              },
+              inputFormatters: [
+                LengthLimitingTextInputFormatter(3),
+                WhitelistingTextInputFormatter(RegExp(r'\d'))
+              ],
             ),
             Container(width: 8.0),
-            _buildValueChangeButton(
+            ValueChangedButton(
               buttonText: '-',
               valueChange: () {
                 if (_boxFieldFocusNode.hasFocus) _boxFieldFocusNode.unfocus();
@@ -83,7 +73,7 @@ class _BoxCountFieldState extends State<BoxCountField> {
               ),
             ),
             Container(width: 3.0),
-            _buildValueChangeButton(
+            ValueChangedButton(
               buttonText: '+',
               valueChange: () {
                 if (_boxFieldFocusNode.hasFocus) _boxFieldFocusNode.unfocus();
@@ -101,32 +91,6 @@ class _BoxCountFieldState extends State<BoxCountField> {
           ],
         ),
       ],
-    );
-  }
-
-  Widget _buildValueChangeButton({
-    String buttonText,
-    VoidCallback valueChange,
-    EdgeInsets padding,
-    double textScaleFactor,
-    BorderRadius radius,
-  }) {
-    return Material(
-      borderRadius: radius,
-      color: AppColors.lightOrange,
-      child: InkWell(
-        highlightColor: AppColors.darkOrange,
-        splashColor: AppColors.darkOrange,
-        onTap: valueChange,
-        child: Padding(
-          padding: padding,
-          child: Text(
-            buttonText,
-            style: TextStyle(color: Colors.white),
-            textScaleFactor: textScaleFactor,
-          ),
-        ),
-      ),
     );
   }
 

@@ -71,7 +71,7 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
           Text(
-            'Atur jadwal langganan dengan menekan tanggal pada kalender. ' +
+            'Atur jadwal langganan dengan menekan tanggal pada kalender. '
                 'Selesaikan transaksi sebelum pukul 19:00 untuk mulai pengiriman besok.',
             style: TextStyle(color: Colors.black38),
           ),
@@ -84,5 +84,6 @@ class _SubscriptionFormState extends State<SubscriptionForm> {
     _currentlySelectedDates =
         SubscriptionUtils.defaultSubscriptionDates(newPeriod);
     setState(() {});
+    widget.subscriptionDateChanged(_currentlySelectedDates);
   }
 }

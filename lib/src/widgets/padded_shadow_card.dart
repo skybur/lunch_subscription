@@ -10,8 +10,10 @@ class PaddedShadowCard extends StatelessWidget {
     Key key,
     this.child,
     this.padding = const EdgeInsets.all(16.0),
-    this.innerPadding =
-        const EdgeInsets.symmetric(vertical: 20.0, horizontal: 16.0),
+    this.innerPadding = const EdgeInsets.symmetric(
+      vertical: 20.0,
+      horizontal: 16.0,
+    ),
     this.borderRadius = 4.0,
   }) : super(key: key);
   @override
@@ -23,10 +25,7 @@ class PaddedShadowCard extends StatelessWidget {
         shadowColor: Colors.grey,
         borderRadius: BorderRadius.circular(borderRadius),
         elevation: 4.0,
-        child: Padding(
-          padding: innerPadding,
-          child: child,
-        ),
+        child: Padding(padding: innerPadding, child: child),
       ),
     );
   }

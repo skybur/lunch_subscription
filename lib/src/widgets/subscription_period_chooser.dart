@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:lunch_subscription/src/screens/custom_period_dialog.dart';
 import 'package:lunch_subscription/src/styles/app_theme.dart';
 import 'package:lunch_subscription/src/utils/utils.dart';
 
@@ -62,14 +63,14 @@ class _SubscriptionPeriodChooserState extends State<SubscriptionPeriodChooser> {
 
   void onPeriodSelected(PeriodEntry entry) async {
     if (entry.periodType == PeriodEnum.custom) {
-      // var custLength = await showDialog<int>(
-      //     context: context,
-      //     barrierDismissible: false,
-      //     builder: (context) => LengthDialog(
-      //           prevLength: _selectedLength.lengthValue,
-      //         ));
-      // if (custLength == null) return;
-      entry = PeriodEntry(entry.periodType, entry.periodValue);
+      var custLength = await showDialog<int>(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => CustomPeriodDialog(
+                currentLength: _selectedPeriod.periodValue,
+              ));
+      if (custLength == null) return;
+      entry = PeriodEntry(entry.periodType, custLength);
     }
     setState(() {
       _selectedPeriod = entry;
