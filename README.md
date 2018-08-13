@@ -1,6 +1,9 @@
 # lunch_subscription
 
-A new Flutter project.
+To build the apk, run following command in the root folder.
+```
+flutter build apk
+```
 
 ## Getting Started
 
